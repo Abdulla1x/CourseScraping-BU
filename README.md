@@ -17,5 +17,6 @@ pip install google-genai langchain
    ```sh
    GEMINI_API_KEY=your_api_key
    ```
+### After that you can run the program
 
 
