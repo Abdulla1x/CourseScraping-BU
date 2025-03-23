@@ -27,7 +27,14 @@ task = f"""
     Select SEAST from the division dropdown
     Click the "Apply Filter" button.
     ### Step 6: Obtain Courses
-    Retrieve the list of courses in json.
+    Obtain the following information from all pages.
+     - Course
+     - Course Name
+     - Credits
+     - Start Date
+     - End Date
+     - Max Enr
+     - Total Enr
 """
 
 # Initialize the model
@@ -38,7 +45,7 @@ async def main():
         task=task,
         llm=llm,
     )
-    await agent.run()
+    results = await agent.run()
     input("Press Enter to continue...")
     await browser.close()
 
