@@ -27,7 +27,9 @@ task = f"""
     Select SEAST from the division dropdown
     Click the "Apply Filter" button.
     ### Step 6: Obtain Courses
-    Retrieve the list of courses in json.
+    Retrieve the courses list in csv format for x in range(i) where x is the viewing page and i is the total amount of pages
+    ### Step 7: Output courses
+    Show all the course lists you have extracted from all the pages
 """
 
 # Initialize the model
