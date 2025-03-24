@@ -40,7 +40,7 @@ async def main():
         task=task,
         llm=llm,
     )
-    await agent.run()
+    results = await agent.run()
     input("Press Enter to continue...")
     await browser.close()
 
