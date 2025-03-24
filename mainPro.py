@@ -27,14 +27,9 @@ task = f"""
     Select SEAST from the division dropdown
     Click the "Apply Filter" button.
     ### Step 6: Obtain Courses
-    Obtain the following information from all pages.
-     - Course
-     - Course Name
-     - Credits
-     - Start Date
-     - End Date
-     - Max Enr
-     - Total Enr
+    Retrieve the courses list in csv format for x in range(i) where x is the viewing page and i is the total amount of pages
+    ### Step 7: Output courses
+    Show all the course lists you have extracted from all the pages
 """
 
 # Initialize the model
