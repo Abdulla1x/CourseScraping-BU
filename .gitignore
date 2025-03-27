@@ -1,4 +1,5 @@
 # Ignore environment variable files
+.csv
 .env
 .env.local
 .env.*.local
