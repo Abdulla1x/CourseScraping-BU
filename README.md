@@ -17,6 +17,15 @@ pip install google-genai langchain
    ```sh
    GEMINI_API_KEY=your_api_key
    ```
-### After that you can run the program
+### Step 3: Clone the repo
+   ```sh
+   git clone https://github.com/suhailsameer/CourseScraping-BU.git
+   ```
+### Step 4: Run Streamlit
+Once above steps are completed, run the following command in the terminal to start the program
+   ```sh
+   steamlit run streamlit
+   ```
+
 
 
