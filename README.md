@@ -24,7 +24,7 @@ pip install google-genai langchain
 ### Step 4: Run Streamlit
 Once above steps are completed, run the following command in the terminal to start the program
    ```sh
-   steamlit run streamlit
+   steamlit run .\streamlitApp.py
    ```
 
 
