@@ -4,11 +4,11 @@ from browser_use import Agent, Browser, BrowserConfig, Controller
 from pydantic import SecretStr, BaseModel
 from typing import List
 import os
-import csv
 import asyncio
 import sys
 import getpass
 from dotenv import load_dotenv
+import pandas as pd
 load_dotenv()
 
 if sys.platform == "win32":
@@ -36,25 +36,25 @@ class Courses(BaseModel):
 controller = Controller(output_model=Courses)
 
 
-def save_to_file(data,filename="courses.csv"):
-    header = ["Course Code", "Course Name", "Credits", "Instructor", "Room", "Days", "Start Time", "End Time", "Max Enroll", "Total Enroll"]
-    with open(filename, "w") as file:
-        writer = csv.writer(file)
-        writer.writerow(header)
-        for course in data:
-            writer.writerow([
-                course.course_code,
-                course.course_name,
-                course.credits,
-                ', '.join(course.instructor),
-                course.room,
-                course.days,
-                course.start_time,
-                course.end_time,
-                course.max_enroll,
-                course.total_enroll
-            ])
-    print(f"Data saved to {filename}")
+# def save_to_file(data,filename="courses.csv"):
+#     header = ["Course Code", "Course Name", "Credits", "Instructor", "Room", "Days", "Start Time", "End Time", "Max Enroll", "Total Enroll"]
+#     with open(filename, "w") as file:
+#         writer = csv.writer(file)
+#         writer.writerow(header)
+#         for course in data:
+#             writer.writerow([
+#                 course.course_code,
+#                 course.course_name,
+#                 course.credits,
+#                 ', '.join(course.instructor),
+#                 course.room,
+#                 course.days,
+#                 course.start_time,
+#                 course.end_time,
+#                 course.max_enroll,
+#                 course.total_enroll
+#             ])
+#     print(f"Data saved to {filename}")
 
 
 # Initialize the model
@@ -95,6 +95,33 @@ async def main(username, password):
     Return the obtained information.
     ```
 """
+
+def save_to_file(data,filename="courses.csv"):
+    courses_data = []
+    for course in data:
+        course_dict = {
+            "Course Code": course.course_code,
+            "Course Name": course.course_name,
+            "Credits": course.credits,
+            "Instructor": ", ".join(course.instructor),  # If there is multiple professors seperate by comma
+            "Room": course.room,
+            "Days": course.days,
+            "Start Time": course.start_time,
+            "End Time": course.end_time,
+            "Max Enroll": course.max_enroll,
+            "Total Enroll": course.total_enroll
+        }
+        courses_data.append(course_dict)
+
+    df = pd.DataFrame(courses_data)
+    df.to_csv(filename, index=False)
+    print(f"Data saved to {filename}")
+
+
+# Initialize the model
+llm = ChatGoogleGenerativeAI(model='gemini-2.0-flash-exp', api_key=SecretStr(os.getenv('GEMINI_API_KEY')))
+browser = Browser()
+async def main():
     agent = Agent(
         task=task,
         llm=llm,
