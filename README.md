@@ -5,6 +5,7 @@ pip install browser-use
 pip install playwright
 playwright install
 pip install google-genai langchain
+pip install streamlit
 ```
 
 ### Step 2: Set Up Gemini API Key
