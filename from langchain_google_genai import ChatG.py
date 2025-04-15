@@ -15,9 +15,6 @@ username = input("Enter your username: ")
 password = getpass.getpass("Enter your password: ")
 api_key = os.getenv("GEMINI_API_KEY")
 
-class CPage(BaseModel):
-    total_pages: int
-
 class Course(BaseModel):
     course_code: str
     course_name: str
@@ -81,7 +78,7 @@ async def click_next_page(page, current_page):
         return True
     return False
 
-def save_to_file(data, pagenum,  filename="test.csv"):
+def save_to_file(data, pagenum,  filename="courses.csv"):
     courses_data = []
     for course in data:
         course_dict = {
@@ -104,9 +101,7 @@ def save_to_file(data, pagenum,  filename="test.csv"):
     print(f"Page {pagenum} data saved to {filename}")
 
 # Initialize the model
-llm = ChatGoogleGenerativeAI(model='gemini-2.0-flash-exp', 
-                             api_key=SecretStr(os.getenv('GEMINI_API_KEY')),
-                             temperature=0.0)
+llm = ChatGoogleGenerativeAI(model='gemini-2.0-flash-exp', api_key=SecretStr(os.getenv('GEMINI_API_KEY')))
 browser = Browser()
 
 async def main():
@@ -136,23 +131,22 @@ async def main():
                             llm=llm,
                             browser_context=context,
                             use_vision=False,
-                            controller=controller,
-                            max_actions_per_step=20
+                            controller=controller
                         )
-
-                        pageobj = await context.get_current_page()
-                        url = pageobj.url
-                        visited_urls.add(url)
-
                         results = await next_agent.run()
                         data = results.final_result()
                         if data:
                             parsed = Courses.model_validate_json(data)
                             save_to_file(parsed.courses, current_page)
+                        
+                        pageobj = await context.get_current_page()
+                        url = pageobj.url
+                        visited_urls.add(url)
                     except Exception as e:
                         print(f"Error processing page {current_page}: {str(e)}")
                         continue
                 else:
+                    await browser.close()
                     break
                 current_page +=1
 
