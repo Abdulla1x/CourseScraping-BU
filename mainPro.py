@@ -1,6 +1,7 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from browser_use import Agent, Browser
 from pydantic import SecretStr
+from langchain_ollama import ChatOllama
 import os
 import getpass
 import pandas as pd
@@ -41,7 +42,6 @@ async def format_data(page):
     formatted_data = []
     current_page = 1
     last_page = 8
-    last_course = None
 
     while current_page <= last_page:
         courses = await extract_course_data(page)
@@ -49,9 +49,7 @@ async def format_data(page):
 
         for course in courses:
             if len(course) == 7 and "Credits" not in course[2]:  # Check for valid course entry
-                course_key = f"{course[0]}|{course[1]}" 
-                if course_key == last_course: 
-                    continue
+                
 
                 current_course = {
                     "Course Code": course[0].strip(),
@@ -68,7 +66,6 @@ async def format_data(page):
                     "End Time": "",
                     "Date": "",
                 }
-                last_course = course_key
 
             elif current_course and any("Instructor" in data for data in course):
                 # Handling instructor and additional data
@@ -100,7 +97,29 @@ async def format_data(page):
 
     return formatted_data
     
+async def ollama_func():
+    agent = Agent(
+        task = f"""
+    ### Step 1: Navigate to Website
+    Open "https://www.google.com/" in a web browser.
+    ### Step 2: Enter in search bar
+    Enter the following in the search bar, "What is the capital city of brazil?"
+    ### Step 3: Submit
+    Click on Google Search
+    ### Step 4: Close
+    Close the web browser
+    ```
+    """,
+        llm=ChatOllama(
+            model="deepseek-r1:latest",
+            num_ctx=32000,
+            temperature=0.0
+        ),
+        max_actions_per_step=3
+		#tool_call_in_content=False,
+    )
 
+    result = await agent.run(max_steps=5)
 
 def save_to_file(data, filename="courses.csv"):
     headers = [
@@ -161,3 +180,4 @@ async def main(username,password, semester):
     print("Browser closed automatically.")
 
 # asyncio.run(main(username,password, semester))
+

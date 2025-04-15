@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 import pandas as pd
-from mainPro import main  # Import the main function from mainPro.py
+from mainPro import main,ollama_func  # Import the main function from mainPro.py
 import asyncio
 from PIL import Image
 
@@ -33,6 +33,7 @@ semester = st.sidebar.selectbox("Select Semester:", [
     "SU 2 2012-13", "SU 1 2012-13", "SP 2012-13", "FA 2012-13"
 ], help="Select the semester for which you want to fetch courses.")
 
+
 # Fetch Courses Button
 if st.sidebar.button("Fetch Courses"):
     if username and password and semester:
@@ -63,3 +64,8 @@ if st.sidebar.button("Fetch Courses"):
             st.write(str(e))
     else:
         st.warning("Please enter username, password and select an appropriate semester.")
+
+if st.sidebar.button("Test Local LLM"):
+        with st.spinner("Running Local LLM to find Capital of Brazil....."):
+            asyncio.set_event_loop(asyncio.new_event_loop()) 
+            courses = asyncio.run(ollama_func())
